@@ -50,9 +50,6 @@ int main(int argc, char *argv[]) {
   // Destroy window
   SDL_DestroyWindow(window);
 
-  // Free surface
-  SDL_FreeSurface(screenSurface);
-
   // Quit SDL subsystems
   SDL_Quit();
 

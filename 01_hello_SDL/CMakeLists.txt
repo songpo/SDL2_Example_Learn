@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
+set(CMAKE_CXX_STANDARD 20)
 
 project(lesson01)
 
-set(CMAKE_C_STANDARD 11)
 
 # 设置SDL2目录
 set(SDL2_DIR "D:/Dev/SDL2/2.0.18")
