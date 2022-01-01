@@ -8,6 +8,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "texture_mananger.h"
+
 const char *WINDOW_TITLE = "SDL Example";
 
 const int SCREEN_WIDTH = 800;
@@ -19,8 +21,9 @@ SDL_Window *gWindow = nullptr;
 // The window renderer
 SDL_Renderer *gRenderer = nullptr;
 
-// The texture
-SDL_Texture *gTexture = nullptr;
+// Scene sprites
+SDL_Rect gSpriteClips[4];
+LTexture gSpriteSheetTexture;
 
 // Start up SDL and create window
 bool init() {
@@ -55,36 +58,39 @@ bool init() {
   return success;
 }
 
-// Load texture
-SDL_Texture *loadTexture(std::string filepath) {
-  // The final texture
-  SDL_Texture *newTexture = nullptr;
-
-  // Load image at specified path
-  SDL_Surface *loadedSurface = IMG_Load(filepath.c_str());
-  if (loadedSurface == nullptr) {
-    SDL_Log("Unable to load image %s! SDL_Error: %s", filepath.c_str(), SDL_GetError());
-  } else {
-    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-    if (newTexture == nullptr) {
-      SDL_Log("Unable to load texture %s! SDL_Error: %s", filepath.c_str(), SDL_GetError());
-    }
-
-    // Get rid of old loaded surface
-    SDL_FreeSurface(loadedSurface);
-  }
-
-  return newTexture;
-}
-
 // Load media
 bool loadMedia() {
   // Loading success flag
   bool success = true;
 
-  gTexture = loadTexture("gfx/viewport.png");
-  if (gTexture == nullptr) {
+  // Load Foo' texture
+  if (!gSpriteSheetTexture.loadFromFile(gRenderer, "gfx/dots.png")) {
+    SDL_Log("Failed to load texture image");
     success = false;
+  } else {
+    // Set top left sprite
+    gSpriteClips[0].x = 0;
+    gSpriteClips[0].y = 0;
+    gSpriteClips[0].w = 100;
+    gSpriteClips[0].h = 100;
+
+    // Set top right sprite
+    gSpriteClips[1].x = 100;
+    gSpriteClips[1].y = 0;
+    gSpriteClips[1].w = 100;
+    gSpriteClips[1].h = 100;
+
+    // Set bottom left sprite
+    gSpriteClips[2].x = 0;
+    gSpriteClips[2].y = 100;
+    gSpriteClips[2].w = 100;
+    gSpriteClips[2].h = 100;
+
+    // Set bottom right sprite
+    gSpriteClips[3].x = 100;
+    gSpriteClips[3].y = 100;
+    gSpriteClips[3].w = 100;
+    gSpriteClips[3].h = 100;
   }
 
   return success;
@@ -92,6 +98,9 @@ bool loadMedia() {
 
 // Free media and shutdown SDL
 void close() {
+  // Free loaded images
+  gSpriteSheetTexture.free();
+
   // Destroy window
   SDL_DestroyWindow(gWindow);
   gWindow = nullptr;
@@ -126,40 +135,17 @@ int main(int argc, char *argv[]) {
         }
 
         // Clear screen
+        SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(gRenderer);
 
-        // Top left corner viewport
-        SDL_Rect topLeftViewport;
-        topLeftViewport.x = 0;
-        topLeftViewport.y = 0;
-        topLeftViewport.w = SCREEN_WIDTH / 2 - 5;
-        topLeftViewport.h = SCREEN_HEIGHT / 2;
-        SDL_RenderSetViewport(gRenderer, &topLeftViewport);
-
-        // Render texture to screen
-        SDL_RenderCopy(gRenderer, gTexture, nullptr, nullptr);
-
-        // TopRight corner viewport
-        SDL_Rect topRightViewport;
-        topRightViewport.x = SCREEN_WIDTH / 2 + 5;
-        topRightViewport.y = 0;
-        topRightViewport.w = SCREEN_WIDTH / 2;
-        topRightViewport.h = SCREEN_HEIGHT / 2;
-        SDL_RenderSetViewport(gRenderer, &topRightViewport);
-
-        // Render texture to screen
-        SDL_RenderCopy(gRenderer, gTexture, nullptr, nullptr);
-
-        // TopRight corner viewport
-        SDL_Rect bottomViewport;
-        bottomViewport.x = 0;
-        bottomViewport.y = SCREEN_HEIGHT / 2 + 10;
-        bottomViewport.w = SCREEN_WIDTH;
-        bottomViewport.h = SCREEN_HEIGHT / 2 - 10;
-        SDL_RenderSetViewport(gRenderer, &bottomViewport);
-
-        // Render texture to screen
-        SDL_RenderCopy(gRenderer, gTexture, nullptr, nullptr);
+        // Render sprite
+        gSpriteSheetTexture.render(gRenderer, 0, 0, &gSpriteClips[0]);
+        gSpriteSheetTexture.render(gRenderer, SCREEN_WIDTH - gSpriteClips[1].w, 0, &gSpriteClips[1]);
+        gSpriteSheetTexture.render(gRenderer, 0, SCREEN_HEIGHT - gSpriteClips[2].h, &gSpriteClips[2]);
+        gSpriteSheetTexture.render(gRenderer,
+                                   SCREEN_WIDTH - gSpriteClips[3].w,
+                                   SCREEN_HEIGHT - gSpriteClips[3].h,
+                                   &gSpriteClips[3]);
 
         // Update screen
         SDL_RenderPresent(gRenderer);

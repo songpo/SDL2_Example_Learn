@@ -7,8 +7,8 @@
 #include <SDL.h>
 
 const char *WINDOW_TITLE = "SDL Example";
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1080;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 int main(int argc, char *argv[]) {
   // The window we'll be rendering to
