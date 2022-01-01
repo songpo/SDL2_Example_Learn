@@ -84,6 +84,21 @@ SDL_Surface *loadSurface(std::string filepath) {
   return optimizedSurface;
 }
 
+// Load media
+bool loadMedia() {
+  // Loading success flag
+  bool success = true;
+
+  // Load default surface
+  gStretchedSurface = loadSurface("gfx/loaded.png");
+  if (gStretchedSurface == nullptr) {
+    SDL_Log("Failed to load surface");
+    success = false;
+  }
+
+  return success;
+}
+
 // Free media and shutdown SDL
 void close() {
   // Free surface
@@ -92,6 +107,9 @@ void close() {
   // Destroy window
   SDL_DestroyWindow(gWindow);
   gWindow = nullptr;
+
+  // Quit SDL_image
+  IMG_Quit();
 
   // Quit SDL subsystem
   SDL_Quit();
@@ -102,10 +120,7 @@ int main(int argc, char *argv[]) {
   if (!init()) {
     SDL_Log("Failed to initialize!");
   } else {
-    gStretchedSurface = loadSurface("gfx/loaded.png");
-    if (gStretchedSurface == nullptr) {
-      SDL_Log("Failed to load surface");
-    } else {
+    if (loadMedia()) {
       // Main loop flag
       bool quite = false;
 
