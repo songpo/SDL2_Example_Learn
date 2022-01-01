@@ -23,6 +23,7 @@ SDL_Renderer *gRenderer = nullptr;
 
 // Scene sprites
 LTexture gModulatedTexture;
+LTexture gBackgroundTexture;
 
 // Start up SDL and create window
 bool init() {
@@ -62,9 +63,16 @@ bool loadMedia() {
   // Loading success flag
   bool success = true;
 
-  // Load Foo' texture
-  if (!gModulatedTexture.loadFromFile(gRenderer, "gfx/colors.png")) {
-    SDL_Log("Failed to load texture image");
+  // Load fadeout texture
+  if (!gModulatedTexture.loadFromFile(gRenderer, "gfx/fadeout.png")) {
+    SDL_Log("Failed to load front texture image");
+    success = false;
+  } else {
+    gModulatedTexture.setBlendMode(SDL_BLENDMODE_BLEND);
+  }
+
+  if (!gBackgroundTexture.loadFromFile(gRenderer, "gfx/fadein.png")) {
+    SDL_Log("Failed to load background texture image");
     success = false;
   }
 
@@ -75,6 +83,7 @@ bool loadMedia() {
 void close() {
   // Free loaded images
   gModulatedTexture.free();
+  gBackgroundTexture.free();
 
   // Destroy window
   SDL_DestroyWindow(gWindow);
@@ -100,9 +109,7 @@ int main(int argc, char *argv[]) {
       SDL_Event event;
 
       // Modulation components
-      Uint8 r = 255;
-      Uint8 g = 255;
-      Uint8 b = 255;
+      Uint8 a = 255;
 
       // While application is running
       while (!quite) {
@@ -114,17 +121,19 @@ int main(int argc, char *argv[]) {
           } else {
             // On keypress change rgb values
             switch (event.key.keysym.sym) {
-              case SDLK_q: r += 5;
+              case SDLK_w:
+                if (a + 5 > 255) {
+                  a = 255;
+                } else {
+                  a += 5;
+                }
                 break;
-              case SDLK_w: g += 5;
-                break;
-              case SDLK_e: b += 5;
-                break;
-              case SDLK_a: r -= 5;
-                break;
-              case SDLK_s: g -= 5;
-                break;
-              case SDLK_d: b -= 5;
+              case SDLK_s:
+                if (a - 5 < 0) {
+                  a = 0;
+                } else {
+                  a -= 5;
+                }
                 break;
             }
           }
@@ -135,7 +144,9 @@ int main(int argc, char *argv[]) {
         SDL_RenderClear(gRenderer);
 
         // Render sprite
-        gModulatedTexture.setColor(r, g, b);
+        gBackgroundTexture.render(gRenderer, 0, 0);
+
+        gModulatedTexture.setAlpha(a);
         gModulatedTexture.render(gRenderer, 0, 0);
 
         // Update screen
