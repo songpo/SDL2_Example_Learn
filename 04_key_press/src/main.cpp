@@ -63,41 +63,52 @@ bool init() {
   return success;
 }
 
+// Load individual image
+SDL_Surface *loadSurface(std::string filepath) {
+  // Load image at specified path
+  SDL_Surface *loadedSurface = SDL_LoadBMP(filepath.c_str());
+  if (loadedSurface == nullptr) {
+    SDL_Log("Unable to load image %s! SDL_Error: %s", filepath.c_str(), SDL_GetError());
+  }
+
+  return loadedSurface;
+}
+
 // Load media
 bool loadMedia() {
   // Loading success flag
   bool success = true;
 
   // Load default surface
-  gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = SDL_LoadBMP("gfx/press.bmp");
+  gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] = loadSurface("gfx/press.bmp");
   if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT] == nullptr) {
     SDL_Log("Failed to load default image! SDL_Error: %s", SDL_GetError());
     success = false;
   }
 
   // Load up surface
-  gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] = SDL_LoadBMP("gfx/up.bmp");
+  gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] = loadSurface("gfx/up.bmp");
   if (gKeyPressSurfaces[KEY_PRESS_SURFACE_UP] == nullptr) {
     SDL_Log("Failed to load up image! SDL_Error: %s", SDL_GetError());
     success = false;
   }
 
   // Load down surface
-  gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = SDL_LoadBMP("gfx/down.bmp");
+  gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] = loadSurface("gfx/down.bmp");
   if (gKeyPressSurfaces[KEY_PRESS_SURFACE_DOWN] == nullptr) {
     SDL_Log("Failed to load down image! SDL_Error: %s", SDL_GetError());
     success = false;
   }
 
   // Load left surface
-  gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = SDL_LoadBMP("gfx/left.bmp");
+  gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] = loadSurface("gfx/left.bmp");
   if (gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT] == nullptr) {
     SDL_Log("Failed to load left image! SDL_Error: %s", SDL_GetError());
     success = false;
   }
 
   // Load right surface
-  gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = SDL_LoadBMP("gfx/right.bmp");
+  gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] = loadSurface("gfx/right.bmp");
   if (gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT] == nullptr) {
     SDL_Log("Failed to load right image! SDL_Error: %s", SDL_GetError());
     success = false;
@@ -119,17 +130,6 @@ void close() {
 
   // Quit SDL subsystem
   SDL_Quit();
-}
-
-// LOad individual image
-SDL_Surface *loadSurface(std::string filepath) {
-  // Load image at specified path
-  SDL_Surface *loadedSurface = SDL_LoadBMP(filepath.c_str());
-  if (loadedSurface == nullptr) {
-    SDL_Log("Unable to load image %s! SDL_Error: %s", filepath.c_str(), SDL_GetError());
-  }
-
-  return loadedSurface;
 }
 
 int main(int argc, char *argv[]) {
