@@ -5,3 +5,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(01_hello_SDL)
 add_subdirectory(02_get_an_image_on_the_screen)
+add_subdirectory(03_event_driven_programming)

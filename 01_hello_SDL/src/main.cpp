@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 
+const char *WINDOW_TITLE = "SDL Example";
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
@@ -23,7 +24,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Create window
-  window = SDL_CreateWindow("Lesson01",
+  window = SDL_CreateWindow(WINDOW_TITLE,
                             SDL_WINDOWPOS_CENTERED,
                             SDL_WINDOWPOS_CENTERED,
                             SCREEN_WIDTH,

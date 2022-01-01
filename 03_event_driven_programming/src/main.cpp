@@ -8,6 +8,7 @@
 #include <string>
 
 const char *WINDOW_TITLE = "SDL Example";
+
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
@@ -19,6 +20,7 @@ SDL_Surface *gScreenSurface = nullptr;
 
 SDL_Surface *gHelloWorld = nullptr;
 
+// Start up SDL and create window
 bool init() {
   // Initialization flag
   bool success = true;
@@ -36,7 +38,7 @@ bool init() {
                              SCREEN_WIDTH,
                              SCREEN_HEIGHT,
                              SDL_WINDOW_SHOWN);
-  if (gWindow == NULL) {
+  if (gWindow == nullptr) {
     SDL_Log("Window could not be created! SDL_Error: %s", SDL_GetError());
     success = false;
   }
@@ -47,6 +49,7 @@ bool init() {
   return success;
 }
 
+// Load media
 bool loadMedia() {
   // Loading success flag
   bool success = true;
@@ -62,6 +65,7 @@ bool loadMedia() {
   return success;
 }
 
+// Free media and shutdown SDL
 void close() {
   // Deallocate surface
   SDL_FreeSurface(gHelloWorld);
@@ -84,14 +88,28 @@ int main(int argc, char *argv[]) {
     if (!loadMedia()) {
       SDL_Log("Failed to load media!");
     } else {
-      // Apply the image
-      SDL_BlitSurface(gHelloWorld, nullptr, gScreenSurface, nullptr);
+      // Main loop flag
+      bool quite = false;
 
-      // Update the surface
-      SDL_UpdateWindowSurface(gWindow);
+      // Event handler
+      SDL_Event event;
 
-      // Wait two seconds
-      SDL_Delay(2000);
+      // While application is running
+      while (!quite) {
+        // Handle events on queue
+        while (SDL_PollEvent(&event)) {
+          // User requests quit
+          if (event.type == SDL_QUIT) {
+            quite = true;
+          }
+        }
+
+        // Apply the image
+        SDL_BlitSurface(gHelloWorld, nullptr, gScreenSurface, nullptr);
+
+        // Update the surface
+        SDL_UpdateWindowSurface(gWindow);
+      }
     }
   }
 
