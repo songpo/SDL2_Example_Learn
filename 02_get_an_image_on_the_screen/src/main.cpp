@@ -36,7 +36,7 @@ bool init() {
                              SCREEN_WIDTH,
                              SCREEN_HEIGHT,
                              SDL_WINDOW_SHOWN);
-  if (gWindow == NULL) {
+  if (gWindow == nullptr) {
     SDL_Log("Window could not be created! SDL_Error: %s", SDL_GetError());
     success = false;
   }

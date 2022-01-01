@@ -122,6 +122,7 @@ void close() {
   // Deallocate surface
   for (auto &it: gKeyPressSurfaces) {
     SDL_FreeSurface(it);
+    it = nullptr;
   }
 
   // Destroy window
