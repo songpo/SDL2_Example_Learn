@@ -11,10 +11,12 @@ LTexture::LTexture() {
   mWidth = 0;
   mHeight = 0;
 }
+
 LTexture::~LTexture() {
   // Deallocate
   free();
 }
+
 bool LTexture::loadFromFile(SDL_Renderer *renderer, std::string filepath) {
   // Get rid of preexisting texture
   free();
@@ -48,6 +50,7 @@ bool LTexture::loadFromFile(SDL_Renderer *renderer, std::string filepath) {
 
   return newTexture != nullptr;
 }
+
 void LTexture::free() {
   // Free texture if it exists
   if (mTexture != nullptr) {
@@ -57,6 +60,7 @@ void LTexture::free() {
     mHeight = 0;
   }
 }
+
 void LTexture::render(SDL_Renderer *renderer, int x, int y) {
   // Set rendering space and render to screen
   SDL_Rect renderQuad = {x, y, mWidth, mHeight};
